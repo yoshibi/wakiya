@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レンタル着付・レッスン予約フォーム｜脇屋</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1c1510; --paper: #faf7f2; --washi: #f0ebe0;
+  --crimson: #8b1a28; --crimson-h: #a82535;
+  --gold: #b5883e; --gray: #6b6460; --border: #d8cfc4;
+  --shadow: rgba(28,21,16,0.09);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif JP', serif;
+  background: var(--paper); color: var(--ink); min-height: 100vh;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(139,26,40,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 10% 90%, rgba(181,136,62,0.05) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.page { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 48px 24px 80px; }
+
+.header { text-align: center; margin-bottom: 40px; animation: fadeDown 0.7s ease both; }
+.kamon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border: 1.5px solid var(--crimson); border-radius: 50%;
+  font-size: 20px; color: var(--crimson); margin-bottom: 16px; opacity: 0.85;
+}
+.header-sub { font-size: 10px; letter-spacing: 0.35em; color: var(--gold); margin-bottom: 8px; }
+.header-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(20px, 5vw, 28px); font-weight: 500;
+  letter-spacing: 0.12em; line-height: 1.5; margin-bottom: 14px;
+}
+.rule { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 18px; }
+.rule span { flex: 1; max-width: 70px; height: 1px; background: var(--border); }
+.rule i { color: var(--crimson); font-size: 9px; font-style: normal; }
+.header-note {
+  font-size: 12px; color: var(--gray); line-height: 1.9; letter-spacing: 0.04em;
+  background: var(--washi); border-left: 3px solid var(--crimson);
+  padding: 11px 15px; text-align: left; border-radius: 0 4px 4px 0;
+}
+
+.card {
+  background: #fff; border: 1px solid var(--border); border-radius: 2px;
+  padding: 36px 32px; box-shadow: 0 4px 24px var(--shadow);
+  animation: fadeUp 0.8s 0.15s ease both;
+}
+@media (max-width: 480px) { .card { padding: 24px 16px; } }
+
+.sec { border-bottom: 1px solid var(--washi); padding-bottom: 24px; margin-bottom: 24px; }
+.sec:last-of-type { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.sec-label {
+  font-size: 10px; letter-spacing: 0.28em; color: var(--gold);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.field { margin-bottom: 18px; }
+.field:last-child { margin-bottom: 0; }
+label { display: block; font-size: 13px; font-weight: 500; letter-spacing: 0.06em; margin-bottom: 6px; }
+.req { color: var(--crimson); font-size: 10px; margin-left: 3px; }
+.hint { font-size: 11px; color: var(--gray); margin-bottom: 7px; letter-spacing: 0.03em; line-height: 1.7; }
+
+input[type=text], input[type=email], input[type=tel], select, textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: 2px;
+  padding: 10px 13px; font-family: 'Noto Serif JP', serif; font-size: 14px;
+  color: var(--ink); background: var(--paper); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--crimson); background: #fff;
+  box-shadow: 0 0 0 3px rgba(139,26,40,0.08);
+}
+input::placeholder, textarea::placeholder { color: #b8b0a8; font-size: 13px; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b1a28' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center;
+  padding-right: 36px; cursor: pointer;
+}
+textarea { resize: vertical; min-height: 80px; line-height: 1.7; }
+
+.choices { display: flex; flex-direction: column; gap: 9px; }
+.choice {
+  display: flex; align-items: flex-start; gap: 9px; cursor: pointer;
+  padding: 9px 13px; border: 1px solid var(--border); border-radius: 2px;
+  background: var(--paper); transition: border-color 0.2s, background 0.2s;
+}
+.choice:hover { border-color: var(--crimson); background: #fff; }
+.choice input[type=radio], .choice input[type=checkbox] {
+  width: auto; margin-top: 2px; accent-color: var(--crimson);
+  cursor: pointer; flex-shrink: 0;
+}
+.choice-text { font-size: 13px; line-height: 1.5; letter-spacing: 0.04em; }
+.choice-sub { font-size: 11px; color: var(--gray); margin-top: 1px; display: block; }
+
+.err-msg { display: none; font-size: 11px; color: var(--crimson); margin-top: 4px; }
+.field.bad input, .field.bad select, .field.bad textarea { border-color: var(--crimson); }
+.field.bad .err-msg { display: block; }
+
+/* ローディング表示 */
+.loading-dates {
+  font-size: 12px; color: var(--gray); padding: 10px 0;
+  display: flex; align-items: center; gap: 8px;
+}
+.spinner {
+  width: 14px; height: 14px; border: 2px solid var(--border);
+  border-top-color: var(--crimson); border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+.date-error { font-size: 12px; color: var(--crimson); padding: 10px 0; }
+
+.submit-wrap { margin-top: 32px; text-align: center; }
+.btn-submit {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--crimson); color: #fff; border: none;
+  padding: 14px 44px; font-family: 'Shippori Mincho', serif;
+  font-size: 14px; letter-spacing: 0.2em; cursor: pointer; border-radius: 1px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(139,26,40,0.25);
+}
+.btn-submit:hover { background: var(--crimson-h); transform: translateY(-2px); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-submit svg { width: 15px; height: 15px; flex-shrink: 0; }
+.submit-note { margin-top: 12px; font-size: 11px; color: var(--gray); letter-spacing: 0.05em; line-height: 1.8; }
+
+.thanks { display: none; text-align: center; padding: 56px 20px; animation: fadeUp 0.6s ease both; }
+.thanks-ico { font-size: 44px; margin-bottom: 18px; }
+.thanks h2 { font-family: 'Shippori Mincho', serif; font-size: 21px; letter-spacing: 0.15em; margin-bottom: 14px; color: var(--crimson); }
+.thanks p { font-size: 13px; color: var(--gray); line-height: 2; letter-spacing: 0.06em; }
+
+.footer { text-align: center; margin-top: 36px; font-size: 11px; color: #b8b0a8; letter-spacing: 0.1em; }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(16px);  } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin     { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="kamon">✿</div>
+    <p class="header-sub">Reservation Form</p>
+    <h1 class="header-title">レンタル着付・レッスン<br>ご予約フォーム</h1>
+    <div class="rule"><span></span><i>✦</i><span></span></div>
+    <p class="header-note">
+      ご予約はこちらのフォームからお申し込みください。<br>
+      ※予約は確定ではありません。ご予約頂き次第、日程と時間を折り返しご連絡させて頂きます。
+    </p>
+  </header>
+
+  <div class="card" id="formCard">
+    <form id="reserveForm" novalidate>
+
+      <div class="sec">
+        <p class="sec-label">お客様情報</p>
+        <div class="field" id="f-name">
+          <label for="name">お名前（フルネーム）<span class="req">必須</span></label>
+          <input type="text" id="name" placeholder="例：山田 花子" autocomplete="name">
+          <span class="err-msg">お名前をご入力ください</span>
+        </div>
+        <div class="field" id="f-email">
+          <label for="email">メールアドレス<span class="req">必須</span></label>
+          <input type="email" id="email" placeholder="例：hanako@example.com" autocomplete="email">
+          <span class="err-msg">正しいメールアドレスをご入力ください</span>
+        </div>
+        <div class="field" id="f-tel">
+          <label for="tel">電話番号（ハイフンなし）<span class="req">必須</span></label>
+          <input type="tel" id="tel" placeholder="例：09012345678" autocomplete="tel">
+          <span class="err-msg">電話番号をご入力ください（10〜11桁）</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="sec-label">ご予約内容</p>
+        <div class="field" id="f-menu">
+          <label>ご希望のメニュー<span class="req">必須</span></label>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="menu" value="着物レンタル予約">
+              <span class="choice-text">着物レンタル予約<span class="choice-sub">着付時間 約30分</span></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="menu" value="着付レッスン予約">
+              <span class="choice-text">着付レッスン予約<span class="choice-sub">レッスン1回 60分</span></span>
+            </label>
+          </div>
+          <span class="err-msg" id="menu-err">メニューをお選びください</span>
+        </div>
+
+        <div class="field" id="f-date">
+          <label for="date">ご希望日<span class="req">必須</span></label>
+          <p class="hint">※土日祝以外をご希望の場合は備考欄にご記入ください</p>
+          <div id="date-wrap">
+            <div class="loading-dates"><div class="spinner"></div>日程を読み込み中...</div>
+          </div>
+          <span class="err-msg">ご希望日をお選びください</span>
+        </div>
+
+        <div class="field" id="f-time">
+          <label for="time">ご希望時間帯（開始時間）<span class="req">必須</span></label>
+          <select id="time" disabled>
+            <option value="">まず日程をお選びください</option>
+          </select>
+          <span class="err-msg">ご希望時間帯をお選びください</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="sec-label">知ったきっかけ</p>
+        <div class="field">
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="src" value="Web検索"><span class="choice-text">Web検索</span></label>
+            <label class="choice"><input type="checkbox" name="src" value="SNS（Instagram等）"><span class="choice-text">SNS（Instagram・Twitterなど）</span></label>
+            <label class="choice"><input type="checkbox" name="src" value="知人の紹介"><span class="choice-text">知人の紹介</span></label>
+            <label class="choice"><input type="checkbox" name="src" value="ポスター・チラシ"><span class="choice-text">ポスター・チラシ</span></label>
+            <label class="choice"><input type="checkbox" name="src" value="その他"><span class="choice-text">その他</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <p class="sec-label">ご質問・ご要望</p>
+        <div class="field">
+          <label for="remarks">その他、ご質問やご要望があればご記入ください</label>
+          <textarea id="remarks" placeholder="ご自由にお書きください"></textarea>
+        </div>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          予約を申し込む
+        </button>
+        <p class="submit-note">送信後、折り返しご連絡いたします。自動返信メールはございません。</p>
+      </div>
+    </form>
+
+    <div class="thanks" id="thanks">
+      <div class="thanks-ico">✿</div>
+      <h2>お申し込みありがとうございます</h2>
+      <p>ご予約内容を受け付けました。<br>折り返し、日程と時間についてご連絡いたします。<br>しばらくお待ちください。</p>
+    </div>
+  </div>
+
+  <p class="footer">脇屋 着付教室・着物レンタル</p>
+</div>
+
+<script>
+// ================================================================
+//  ★ここにGASのウェブアプリURLを貼り付ける
+// ================================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbztQf-fLfXKS-8Kw_kppkBJtL4kk4G5_ygVv_ieDZKdtd0j0rv_BjAnZMDPHCrUH0r5kw/exec';
+// ================================================================
+
+// 時間帯の定義
+const TIMES_1030 = ['10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30'];
+const TIMES_1330 = ['13:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+
+// 日程選択に応じて時間帯を切り替える
+function updateTimes(type) {
+  const timeSel = document.getElementById('time');
+  timeSel.innerHTML = '<option value="">時間帯をお選びください</option>';
+  const times = type && type.includes('13:30') ? TIMES_1330 : TIMES_1030;
+  times.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t; o.textContent = t;
+    timeSel.appendChild(o);
+  });
+  timeSel.disabled = false;
+  document.getElementById('f-time').classList.remove('bad');
+}
+
+// 日程をGASから取得してセレクトボックスに反映
+async function loadDates() {
+  const wrap = document.getElementById('date-wrap');
+  try {
+    const res  = await fetch(GAS_URL + '?action=getDates');
+    const data = await res.json();
+    if (!data.ok || !data.dates.length) {
+      wrap.innerHTML = '<p class="date-error">現在受付中の日程がありません。</p>';
+      return;
+    }
+    // dateMapにtypeを保存しておく
+    window._dateTypeMap = {};
+    const sel = document.createElement('select');
+    sel.id = 'date';
+    sel.innerHTML = '<option value="">日程をお選びください</option>';
+    data.dates.forEach(d => {
+      const o = document.createElement('option');
+      o.value = d.label;
+      o.textContent = d.label;
+      o.dataset.type = d.type || '';
+      sel.appendChild(o);
+      window._dateTypeMap[d.label] = d.type || '';
+    });
+    // 日程変更時に時間帯を切り替え
+    sel.addEventListener('change', function() {
+      const type = window._dateTypeMap[this.value] || '';
+      if (this.value) {
+        updateTimes(type);
+      } else {
+        const timeSel = document.getElementById('time');
+        timeSel.innerHTML = '<option value="">まず日程をお選びください</option>';
+        timeSel.disabled = true;
+      }
+    });
+    wrap.innerHTML = '';
+    wrap.appendChild(sel);
+  } catch {
+    wrap.innerHTML = '<p class="date-error">日程の読み込みに失敗しました。ページを再読み込みしてください。</p>';
+  }
+}
+
+// バリデーション
+function setErr(id, bad) { document.getElementById(id).classList.toggle('bad', bad); }
+function validate() {
+  let ok = true;
+  const name = document.getElementById('name').value.trim();
+  setErr('f-name', !name); if (!name) ok = false;
+  const email = document.getElementById('email').value.trim();
+  const eok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setErr('f-email', !eok); if (!eok) ok = false;
+  const tel = document.getElementById('tel').value.replace(/-/g,'').trim();
+  const tok = /^[0-9]{10,11}$/.test(tel);
+  setErr('f-tel', !tok); if (!tok) ok = false;
+  const menu = document.querySelector('input[name=menu]:checked');
+  const fmenu = document.getElementById('f-menu');
+  const menuErr = document.getElementById('menu-err');
+  if (!menu) { fmenu.classList.add('bad'); menuErr.style.display = 'block'; ok = false; }
+  else { fmenu.classList.remove('bad'); menuErr.style.display = 'none'; }
+  const dateEl = document.getElementById('date');
+  const date = dateEl ? dateEl.value : '';
+  setErr('f-date', !date); if (!date) ok = false;
+  const time = document.getElementById('time').value;
+  setErr('f-time', !time); if (!time) ok = false;
+  return ok;
+}
+
+// リアルタイムエラー解除
+document.getElementById('reserveForm').addEventListener('input', e => {
+  const w = e.target.closest('.field');
+  if (w) w.classList.remove('bad');
+  if (e.target.name === 'menu') document.getElementById('menu-err').style.display = 'none';
+});
+document.getElementById('reserveForm').addEventListener('change', e => {
+  const w = e.target.closest('.field');
+  if (w) w.classList.remove('bad');
+});
+
+// 送信
+document.getElementById('reserveForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validate()) {
+    document.querySelector('.field.bad')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '送信中...'; btn.disabled = true;
+
+  const srcs = [...document.querySelectorAll('input[name=src]:checked')].map(c => c.value);
+  const dateEl = document.getElementById('date');
+  const payload = {
+    timestamp: new Date().toLocaleString('ja-JP'),
+    name:    document.getElementById('name').value.trim(),
+    email:   document.getElementById('email').value.trim(),
+    tel:     document.getElementById('tel').value.trim(),
+    menu:    document.querySelector('input[name=menu]:checked')?.value || '',
+    date:    dateEl ? dateEl.value : '',
+    time:    document.getElementById('time').value,
+    source:  srcs.join(', '),
+    remarks: document.getElementById('remarks').value.trim(),
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    document.getElementById('reserveForm').style.display = 'none';
+    document.getElementById('thanks').style.display = 'block';
+    document.getElementById('thanks').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch {
+    btn.textContent = '予約を申し込む'; btn.disabled = false;
+    alert('送信に失敗しました。時間をおいて再度お試しください。');
+  }
+});
+
+// 起動時に日程を読み込む
+loadDates();
+</script>
+</body>
+</html>
