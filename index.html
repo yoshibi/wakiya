@@ -148,10 +148,11 @@
   .concept { background: var(--c-paper); }
   .concept__inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
   .concept__visual { position: relative; aspect-ratio: 3/4; background: var(--c-brand); overflow: hidden; }
-  .concept__visual::before { content:""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.35)), repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 2px, transparent 2px 4px), linear-gradient(135deg, var(--c-brand), var(--c-brand-deep)); }
+  .concept__visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .concept__visual::before { content:""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.2)); }
   .concept__visual .placeholder-text { position: absolute; bottom: 20px; left: 20px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: rgba(255,255,255,.6); letter-spacing: .08em; }
   .concept__visual .crest-svg { position: absolute; inset: 0; margin: auto; width: 50%; height: 50%; opacity: .85; color: var(--c-ink); }
-  .concept__visual .frame { position: absolute; inset: 20px; border: 1px solid rgba(255,255,255,.3); pointer-events: none; }
+  .concept__visual .frame { position: absolute; inset: 20px; border: 1px solid rgba(255,255,255,.3); pointer-events: none; z-index: 2; }
   .concept__body p { margin-top: 28px; font-family: var(--f-serif); font-size: 17px; line-height: 2.1; color: var(--c-ink-soft); }
   .concept__body p:first-of-type { font-size: 19px; }
   .concept__kana { position: absolute; right: var(--gutter); top: 60px; font-family: var(--f-latin); font-style: italic; font-size: 13px; letter-spacing: .3em; color: var(--c-muted); writing-mode: vertical-rl; }
@@ -221,10 +222,11 @@
   .teacher .eyebrow::before { background: var(--c-brand-soft); }
   .teacher__grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
   .teacher__visual { position: relative; aspect-ratio: 4/5; background: var(--c-brand); overflow: hidden; }
-  .teacher__visual::before { content:""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.5)), repeating-linear-gradient(-45deg, rgba(255,255,255,.04) 0 2px, transparent 2px 14px), linear-gradient(135deg, var(--c-brand-deep), var(--c-brand)); }
+  .teacher__visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .teacher__visual::before { content:""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.35)); }
   .teacher__visual .placeholder-text { position: absolute; top: 20px; left: 20px; font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,.55); letter-spacing: .08em; }
-  .teacher__visual .sign { position: absolute; bottom: 24px; right: 24px; font-family: var(--f-serif); font-size: 14px; letter-spacing: .3em; color: rgba(255,255,255,.9); writing-mode: vertical-rl; }
-  .teacher__frame { position: absolute; inset: 20px; border: 1px solid rgba(255,255,255,.3); }
+  .teacher__visual .sign { position: absolute; bottom: 24px; right: 24px; font-family: var(--f-serif); font-size: 14px; letter-spacing: .3em; color: rgba(255,255,255,.9); writing-mode: vertical-rl; z-index: 2; }
+  .teacher__frame { position: absolute; inset: 20px; border: 1px solid rgba(255,255,255,.3); z-index: 2; }
   .teacher__body h3 { font-family: var(--f-serif); font-size: clamp(26px, 3vw, 38px); font-weight: 500; line-height: 1.4; margin-top: 24px; }
   .teacher__name { display: flex; align-items: baseline; gap: 16px; margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.2); flex-wrap: wrap; }
   .teacher__name .ja { font-family: var(--f-serif); font-size: 30px; font-weight: 500; letter-spacing: .08em; }
@@ -381,9 +383,8 @@
   <div class="concept__kana">CONCEPT — kimono as everyday</div>
   <div class="wrap concept__inner">
     <div class="concept__visual reveal">
+      <img src="images/concept.jpg" alt="御手洗の町並みを着物で歩く" loading="lazy">
       <div class="frame"></div>
-      <svg class="crest-svg" aria-hidden="true"><use href="#crest"/></svg>
-      <div class="placeholder-text">[ image / 御手洗の町並み ]</div>
     </div>
     <div class="concept__body reveal">
       <span class="eyebrow">Concept</span>
@@ -643,8 +644,8 @@
 <section class="section teacher" id="teacher">
   <div class="wrap teacher__grid">
     <div class="teacher__visual reveal">
+      <img src="images/teacher.jpg" alt="井上由美 — 着付け講師" loading="lazy">
       <div class="teacher__frame"></div>
-      <div class="placeholder-text">[ portrait / 井上由美 ]</div>
       <div class="sign">井 上 由 美</div>
     </div>
     <div class="teacher__body reveal">
