@@ -200,6 +200,17 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.7; }
               <span class="choice-text">着付レッスン予約（呉市内教室）<span class="choice-sub">レッスン1回 90分</span></span>
             </label>
           </div>
+          <script>
+            document.querySelectorAll('input[name="menu"]').forEach(radio => {
+              radio.addEventListener('change', function() {
+              renderDates();
+      // 時間帯をリセット
+              const timeSel = document.getElementById('time');
+              timeSel.innerHTML = '<option value="">まず日程をお選びください</option>';
+              timeSel.disabled = true;
+    });
+  });
+</script>
           <span class="err-msg" id="menu-err">メニューをお選びください</span>
         </div>
 
@@ -296,37 +307,66 @@ async function loadDates() {
       wrap.innerHTML = '<p class="date-error">現在受付中の日程がありません。</p>';
       return;
     }
-    // dateMapにtypeを保存しておく
+
+    // 全日程を保存しておく
+    window._allDates = data.dates;
     window._dateTypeMap = {};
-    const sel = document.createElement('select');
-    sel.id = 'date';
-    sel.innerHTML = '<option value="">日程をお選びください</option>';
     data.dates.forEach(d => {
-      const o = document.createElement('option');
-      o.value = d.label;
-      o.textContent = d.label;
-      o.dataset.type = d.type || '';
-      sel.appendChild(o);
       window._dateTypeMap[d.label] = d.type || '';
     });
-    // 日程変更時に時間帯を切り替え
-    sel.addEventListener('change', function() {
-      const type = window._dateTypeMap[this.value] || '';
-      if (this.value) {
-        updateTimes(type);
-      } else {
-        const timeSel = document.getElementById('time');
-        timeSel.innerHTML = '<option value="">まず日程をお選びください</option>';
-        timeSel.disabled = true;
-      }
-    });
-    wrap.innerHTML = '';
-    wrap.appendChild(sel);
+
+    // 選択中のメニューに応じて日程を絞り込んで表示する
+    renderDates();
+
   } catch {
     wrap.innerHTML = '<p class="date-error">日程の読み込みに失敗しました。ページを再読み込みしてください。</p>';
   }
 }
 
+// メニューに応じて日程を絞り込んで表示する
+function renderDates() {
+  const wrap = document.getElementById('date-wrap');
+  const selectedMenu = document.querySelector('input[name="menu"]:checked');
+  const menuValue = selectedMenu ? selectedMenu.value : '';
+  const isKure = menuValue === '着付レッスン予約（呉市内教室）';
+
+  // 呉市内教室なら「呉市内教室」タイプだけ、それ以外は「呉市内教室」以外を表示
+  const filtered = (window._allDates || []).filter(d => {
+    if (isKure) return d.type === '呉市内教室';
+    return d.type !== '呉市内教室';
+  });
+
+  if (!filtered.length) {
+    wrap.innerHTML = '<p class="date-error">現在受付中の日程がありません。</p>';
+    return;
+  }
+
+  const sel = document.createElement('select');
+  sel.id = 'date';
+  sel.innerHTML = '<option value="">日程をお選びください</option>';
+  filtered.forEach(d => {
+    const o = document.createElement('option');
+    o.value = d.label;
+    o.textContent = d.label;
+    o.dataset.type = d.type || '';
+    sel.appendChild(o);
+  });
+
+  sel.addEventListener('change', function() {
+    const type = window._dateTypeMap[this.value] || '';
+    if (this.value) {
+      updateTimes(type);
+    } else {
+      const timeSel = document.getElementById('time');
+      timeSel.innerHTML = '<option value="">まず日程をお選びください</option>';
+      timeSel.disabled = true;
+    }
+  });
+
+  wrap.innerHTML = '';
+  wrap.appendChild(sel);
+}
+  
 // バリデーション
 function setErr(id, bad) { document.getElementById(id).classList.toggle('bad', bad); }
 function validate() {
