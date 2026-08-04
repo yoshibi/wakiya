@@ -352,10 +352,18 @@ function renderDates() {
     sel.appendChild(o);
   });
 
-  sel.addEventListener('change', function() {
+ sel.addEventListener('change', function() {
     const type = window._dateTypeMap[this.value] || '';
     if (this.value) {
-      updateTimes(type);
+      if (type === '呉市内教室') {
+        // 呉市内教室は10:00固定
+        const timeSel = document.getElementById('time');
+        timeSel.innerHTML = '<option value="10:00">10:00</option>';
+        timeSel.disabled = false;
+        document.getElementById('f-time').classList.remove('bad');
+      } else {
+        updateTimes(type);
+      }
     } else {
       const timeSel = document.getElementById('time');
       timeSel.innerHTML = '<option value="">まず日程をお選びください</option>';
